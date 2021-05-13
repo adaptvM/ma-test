@@ -61,7 +61,9 @@ const Product = (props: Item) => {
             >{`${quantity} in stock`}</span>
           )}
           {isLowOnStock && quantity < 1 && (
-            <span style={{ color: "red" }}>{"OUT OF STOCK"}</span>
+            <span style={{ color: "red", fontSize: "12px" }}>
+              {"OUT OF STOCK"}
+            </span>
           )}
         </p>
         {isLowOnStock && quantity == 1 && (
