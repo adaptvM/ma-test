@@ -1,25 +1,86 @@
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components";
+import Product from './components/Product'
+import {useState, useEffect, useRef} from 'react';
 
 function App() {
+
+  const [items, _setItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(new Set());
+  const [isSelected, setIsSelected] = useState(false);
+  const ref = useRef(items);
+
+  const handleSelectedItem = (e) => {
+    e.stopPropagation();
+   if(e.target.checked) {
+     setIsSelected(true)
+     let id = e.target.parentNode.parentNode.id;
+    setSelectedItems((prevState) => new Set(prevState.add(id)))
+   }
+
+   if(!e.target.checked) {
+     let id = e.target.parentNode.parentNode.id;
+     setSelectedItems((prevState) => {
+       prevState.delete(id)
+       return new Set(prevState);
+     })
+   }
+
+  }
+
+  const updateItems = x => {
+    ref.current = x;
+    _setItems(x);
+  } 
+
+  const handleRemoveItems = (e) => {
+    e.stopPropagation();
+    const filteredItems = items.filter((el) => {
+      return !selectedItems.has(`${el.productId}`);
+    })
+    updateItems(filteredItems);
+    setIsSelected(false);
+    setSelectedItems(new Set());
+  }
+
+  useEffect(() => {
+    fetch('https://run.mocky.io/v3/fca7ef93-8d86-4574-9a4a-3900d91a283e')
+    .then(res => res.json())
+    .then(data => _setItems(data))
+
+  },[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isSelected && selectedItems.size ? (<Button onClick={handleRemoveItems}>Remove {selectedItems.size} products</Button>) : null}
+    <Grid>
+      {items.map((item) => {
+        return (
+          <Product key={item.name} onClick={handleSelectedItem} {...item}/>
+        )
+      })}
+    </Grid>
     </div>
   );
 }
 
+const Grid = styled("div")`
+  display: grid;
+  grid-template-columns: repeat(4, 300px);
+  grid-template-rows: auto auto;
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  padding: 20px;
+  background-color: #f7e8ff;
+  justify-content: center;
+`
+
+const Button = styled("button")`
+ background: purple;
+ color: #f5f5f5;
+ border: 1px solid;
+ padding: 0.25em 1em;
+ font-size: 12px;
+ border-radius: 2px;
+ margin-left: 200px;
+`
 export default App;
