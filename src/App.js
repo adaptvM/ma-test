@@ -50,8 +50,8 @@ function App() {
   },[])
 
   return (
-    <div className="App">
-      {isSelected && selectedItems.size ? (<Button onClick={handleRemoveItems}>Remove {selectedItems.size} products</Button>) : null}
+    <div style={{margin: 'auto'}} className="App">
+      {isSelected && selectedItems.size !== 0 && (<Button onClick={handleRemoveItems}>Remove {selectedItems.size} products</Button>)}
     <Grid>
       {items.map((item) => {
         return (
@@ -81,6 +81,7 @@ const Button = styled("button")`
  padding: 0.25em 1em;
  font-size: 12px;
  border-radius: 2px;
- margin-left: 200px;
+ margin-left: 100px;
+ margin-bottom: 10px;
 `
 export default App;
